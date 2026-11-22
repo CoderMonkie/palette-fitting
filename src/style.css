@@ -1,0 +1,20 @@
+/* 原型 index.html 全局样式：:root 变量 + 基础 body 样式。CSS 变量可穿透 Shadow DOM，组件内 var(--ui-*) 直接继承。 */
+:root{
+  --ui-bg:#F7F6F2;
+  --ui-panel:#FFFFFF;
+  --ui-line:#E4E2DA;
+  --ui-text:#2E2C27;
+  --ui-muted:#78746B;
+  --ui-accent:#2E6E6A;
+  --ui-accent-soft:#E7F0EE;
+  --ui-warn:#B23A2E;
+  --ui-warn-soft:#FBECE9;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--ui-bg);
+  color:var(--ui-text);
+  font:14px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
