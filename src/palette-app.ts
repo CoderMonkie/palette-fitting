@@ -50,7 +50,7 @@ export class PaletteApp extends LitElement {
     .role[aria-pressed="true"]{border-color:var(--ui-accent);color:var(--ui-accent);background:var(--ui-accent-soft);font-weight:600}
     .role i{width:11px;height:11px;border-radius:50%;border:1px solid rgba(0,0,0,.12);flex:none}
     .hexrow{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-    .hexrow input[type="color"]{width:36px;height:36px;padding:0;border:1px solid var(--ui-line);border-radius:6px;background:#fff;cursor:pointer;flex:none}
+    .hexrow .swatch{width:36px;height:36px;border:1px solid var(--ui-line);border-radius:6px;flex:none}
     .hexrow input[type="text"]{
       flex:1;min-width:0;height:36px;padding:0 10px;
       border:1px solid var(--ui-line);border-radius:6px;font:13px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -258,10 +258,6 @@ export class PaletteApp extends LitElement {
     this.requestUpdate()
   }
 
-  private onPicker = (e: Event): void => {
-    this.setColor((e.target as HTMLInputElement).value.toUpperCase())
-  }
-
   private onReset = (): void => {
     delete this.drafts[this.theme]
     this.hexDraft = this.currentColors()[this.role]
@@ -381,7 +377,7 @@ export class PaletteApp extends LitElement {
             <p class="hint">先选要编辑的角色，再用下方调色板拖动取色，或直接输入 HEX。</p>
             <div class="roles">${this.renderRoles()}</div>
             <div class="hexrow">
-              <input type="color" .value=${c[this.role].toLowerCase()} @input=${this.onPicker} aria-label="系统取色器">
+              <div class="swatch" style="background:${c[this.role]}" title="只读展示 · 用下方调色板或 HEX 修改" role="img" aria-label=${'当前色 ' + c[this.role]}></div>
               <input type="text" .value=${this.hexDraft} class=${this.hexBad ? 'bad' : ''}
                 @input=${this.onHexInput} spellcheck="false" aria-label="HEX 色值输入" maxlength="7">
             </div>
