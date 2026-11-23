@@ -162,7 +162,8 @@ export class PaletteApp extends LitElement {
   `
 
   private theme = 0
-  private role: RoleKey = 'accent'
+  // 当前编辑的颜色角色（背景 / 工作面 / 主色）
+  private activeRole: RoleKey = 'accent'
   private scene: SceneKey = 'article'
   private drafts: Record<number, Colors> = {}
   private hexDraft = PRESETS[0].accent
@@ -180,7 +181,7 @@ export class PaletteApp extends LitElement {
 
   private setColor(value: string): void {
     const c = { ...this.currentColors() }
-    c[this.role] = value
+    c[this.activeRole] = value
     this.drafts[this.theme] = c
     this.hexDraft = value
     this.hexBad = false
@@ -188,7 +189,7 @@ export class PaletteApp extends LitElement {
   }
 
   private hsvOfCurrent() {
-    const rgb = hexToRgb(this.currentColors()[this.role])
+    const rgb = hexToRgb(this.currentColors()[this.activeRole])
     return rgbToHsv(rgb.r, rgb.g, rgb.b)
   }
 
@@ -251,7 +252,7 @@ export class PaletteApp extends LitElement {
     if (nv.length === 4) nv = '#' + nv[1] + nv[1] + nv[2] + nv[2] + nv[3] + nv[3]
     nv = nv.toUpperCase()
     const c = { ...this.currentColors() }
-    c[this.role] = nv
+    c[this.activeRole] = nv
     this.drafts[this.theme] = c
     this.hexBad = false
     this.hexDraft = nv
@@ -260,7 +261,7 @@ export class PaletteApp extends LitElement {
 
   private onReset = (): void => {
     delete this.drafts[this.theme]
-    this.hexDraft = this.currentColors()[this.role]
+    this.hexDraft = this.currentColors()[this.activeRole]
     this.hexBad = false
     this.requestUpdate()
     this.showToast('已恢复当前预置')
@@ -289,12 +290,12 @@ export class PaletteApp extends LitElement {
 
   private selectPreset(i: number): void {
     this.theme = i
-    this.hexDraft = this.currentColors()[this.role]
+    this.hexDraft = this.currentColors()[this.activeRole]
     this.hexBad = false
     this.requestUpdate()
   }
   private selectRole(key: RoleKey): void {
-    this.role = key
+    this.activeRole = key
     this.hexDraft = this.currentColors()[key]
     this.hexBad = false
     this.requestUpdate()
@@ -320,7 +321,7 @@ export class PaletteApp extends LitElement {
   private renderRoles(): TemplateResult[] {
     const c = this.currentColors()
     return ROLES.map((r) => html`
-      <button class="role" type="button" aria-pressed=${r.key === this.role ? 'true' : 'false'}
+      <button class="role" type="button" aria-pressed=${r.key === this.activeRole ? 'true' : 'false'}
         @click=${() => this.selectRole(r.key)}>
         <i style="background:${c[r.key]}"></i>${r.label}
       </button>`)
@@ -377,7 +378,7 @@ export class PaletteApp extends LitElement {
             <p class="hint">先选要编辑的角色，再用下方调色板拖动取色，或直接输入 HEX。</p>
             <div class="roles">${this.renderRoles()}</div>
             <div class="hexrow">
-              <div class="swatch" style="background:${c[this.role]}" title="只读展示 · 用下方调色板或 HEX 修改" role="img" aria-label=${'当前色 ' + c[this.role]}></div>
+              <div class="swatch" style="background:${c[this.activeRole]}" title="只读展示 · 用下方调色板或 HEX 修改" role="img" aria-label=${'当前色 ' + c[this.activeRole]}></div>
               <input type="text" .value=${this.hexDraft} class=${this.hexBad ? 'bad' : ''}
                 @input=${this.onHexInput} spellcheck="false" aria-label="HEX 色值输入" maxlength="7">
             </div>
@@ -385,7 +386,7 @@ export class PaletteApp extends LitElement {
             <div class="svpad" style="background:${svBg}"
               @pointerdown=${this.onSvDown} @pointermove=${this.onSvMove}
               @pointerup=${this.onDragEnd} @pointercancel=${this.onDragEnd}>
-              <div class="pad-dot" style="left:${hsv.s * 100}%;top:${(1 - hsv.v) * 100}%;background:${c[this.role]}"></div>
+              <div class="pad-dot" style="left:${hsv.s * 100}%;top:${(1 - hsv.v) * 100}%;background:${c[this.activeRole]}"></div>
             </div>
             <div class="hue"
               @pointerdown=${this.onHueDown} @pointermove=${this.onHueMove}
